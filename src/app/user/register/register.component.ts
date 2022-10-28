@@ -30,8 +30,8 @@ export class RegisterComponent {
   ]);
   phoneNumber = new FormControl('', [
     Validators.required,
-    Validators.minLength(11),
-    Validators.maxLength(11)
+    Validators.minLength(14),
+    Validators.maxLength(14)
   ]);
 
   registerForm = new FormGroup({
@@ -42,4 +42,9 @@ export class RegisterComponent {
     confirm_password: this.confirm_password,
     phoneNumber: this.phoneNumber
   });
+
+
+  register() {
+    console.log(this.registerForm);
+  }
 }
