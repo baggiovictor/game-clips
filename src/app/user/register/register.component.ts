@@ -34,6 +34,10 @@ export class RegisterComponent {
     Validators.maxLength(14)
   ]);
 
+  showAlert = false;
+  alertMsg!: string;
+  alertColor!: string;
+
   registerForm = new FormGroup({
     name: this.name,
     email: this.email,
@@ -45,6 +49,9 @@ export class RegisterComponent {
 
 
   register() {
+    this.showAlert = true;
+    this.alertMsg = 'Please wait! Yout account is being created.'
+    this.alertColor = 'blue'
     console.log(this.registerForm);
   }
 }
