@@ -8,7 +8,6 @@ import { ModalService } from '../services/modal.service';
   styleUrls: ['./nav.component.css']
 })
 export class NavComponent implements OnInit {
-  // isAuthenticated = false;
 
   constructor(
     public modalService: ModalService,
