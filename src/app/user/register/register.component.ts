@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
 import { RegisterValidators } from '../validators/register-validators';
-import  IUser  from 'src/app/models/user.model'
+import { EmailTaken } from '../validators/email-taken';
+import IUser from 'src/app/models/user.model';
 
 @Component({
   selector: 'app-register',
@@ -10,12 +11,16 @@ import  IUser  from 'src/app/models/user.model'
   styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent {
-  constructor(public auth: AuthService) {}
+  constructor(public auth: AuthService, private emailTaken: EmailTaken) {}
 
   inSubmission = false;
 
   name = new FormControl('', [Validators.required, Validators.minLength(3)]);
-  email = new FormControl('', [Validators.required, Validators.email]);
+  email = new FormControl(
+    '',
+    [Validators.required, Validators.email],
+    [this.emailTaken.validate]
+  );
   age = new FormControl<number | null>(null, [
     Validators.required,
     Validators.min(18),
@@ -36,14 +41,17 @@ export class RegisterComponent {
   alertMsg!: string;
   alertColor!: string;
 
-  registerForm = new FormGroup({
-    name: this.name,
-    email: this.email,
-    age: this.age,
-    password: this.password,
-    confirm_password: this.confirm_password,
-    phoneNumber: this.phoneNumber,
-  }, [RegisterValidators.match]);
+  registerForm = new FormGroup(
+    {
+      name: this.name,
+      email: this.email,
+      age: this.age,
+      password: this.password,
+      confirm_password: this.confirm_password,
+      phoneNumber: this.phoneNumber,
+    },
+    [RegisterValidators.match('password', 'confirm_password')]
+  );
 
   async register() {
     this.showAlert = true;
@@ -51,9 +59,8 @@ export class RegisterComponent {
     this.alertColor = 'blue';
     this.inSubmission = true;
 
-
     try {
-      await this.auth.createUser(this.registerForm.value as IUser)
+      await this.auth.createUser(this.registerForm.value as IUser);
     } catch (e) {
       console.error(e);
 
@@ -63,7 +70,7 @@ export class RegisterComponent {
       return;
     }
 
-    this.alertMsg='Success! Your account has been created.'
-    this.alertColor = 'green'
+    this.alertMsg = 'Success! Your account has been created.';
+    this.alertColor = 'green';
   }
 }
